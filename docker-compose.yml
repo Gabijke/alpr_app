@@ -1,0 +1,62 @@
+version: "3.8"
+services:
+  app:
+    container_name: alpr
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    volumes:
+      - ${FINAL_SEGMENTATION_PATH}:/app/final_segmentation
+    links:
+      - postgres
+    networks:
+      - network_alpr
+  postgres:
+    image: postgres:alpine
+    hostname: postgres
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432"
+    networks:
+      - network_alpr
+  metabase:
+    image: metabase/metabase:latest
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: ${DB_NAME}
+      MB_DB_PORT: ${DB_PORT}
+      MB_DB_USER: ${DB_USER}
+      MB_DB_PASS: ${DB_PASS}
+      MB_DB_HOST: ${DB_HOST}
+    container_name: metabase_app
+    depends_on:
+      - postgres
+    links:
+      - postgres
+    networks:
+      - network_alpr
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx_app
+    ports:
+      - "8080:80"
+    volumes:
+      - ${FINAL_SEGMENTATION_PATH}:/usr/share/nginx/html/images/
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    networks:
+      - network_alpr
+networks:
+    network_alpr:
+      driver: bridge
