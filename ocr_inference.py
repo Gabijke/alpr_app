@@ -27,10 +27,10 @@ def predict(img):
     alphabet = "-1234567890ABEKMHOPCTYX"
     PATH = 'models/OcrNet.pth'
     model = OcrNet()
-    model.load_state_dict(torch.load(PATH, map_location=torch.device('cpu')))
-    model.eval()
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
+    model.load_state_dict(torch.load(PATH, map_location=device))
+    model.eval()
+    
     trans = transforms.Compose([transforms.ToPILImage(),
                                 transforms.Grayscale(),
                                 transforms.Resize((50, 200)),
@@ -39,7 +39,6 @@ def predict(img):
     if isinstance(img, np.ndarray):
         img = deskew_img(img)
         X = trans(img).unsqueeze(0)
-        model.cpu()
         X = X.to(device)
         target = model(X)
         _, target = target.max(2)
