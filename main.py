@@ -10,7 +10,7 @@ from multiprocessing import Queue
 from db_conn import DataBase
 
 
-def cam_read(url):
+def cam_read(url, y_start, y_end, x_start, x_end):
 
     model = torch.hub.load('./models/yolov5', 'custom', path='./models/yolov5m.pt', source='local')
     vcap = cv2.VideoCapture(url)
@@ -104,7 +104,7 @@ if __name__ == "__main__":
     x_start = args_dict["x_start"]
     x_end = args_dict["x_end"]
     q = Queue()
-    p1 = threading.Thread(target=cam_read, args=(cam,))
+    p1 = threading.Thread(target=cam_read, args=(cam, x_start, x_end, y_start, y_end))
     p2 = threading.Thread(target=predict_img)
     p1.start()
     p2.start()
