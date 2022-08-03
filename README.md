@@ -28,7 +28,7 @@ The database stores the data number and links to open the image through the brow
 
 ### Metabase
 Dashboard for visualization simplifies work with the database, for quick number search
-![dashboard](https://user-images.githubusercontent.com/85789260/182598055-741561f3-5449-4d43-b1de-1252db01526a.png)
+![image](https://user-images.githubusercontent.com/85789260/182598464-d74695c9-a90f-4d6a-81d5-58fa4b6c13f9.png)
 
 ### nginx
 http server allows you to open images directly in the browser via a link from the dashboard
