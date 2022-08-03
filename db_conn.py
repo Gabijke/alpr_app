@@ -58,6 +58,3 @@ class DataBase:
             cursor.execute(check_table_idx)
             idx = int(cursor.fetchone()[0])
             return idx
-
-
-
